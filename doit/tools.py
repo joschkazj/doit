@@ -32,14 +32,14 @@ def title_with_actions(task):
     return "%s => %s"% (task.name, title)
 
 
+def save_executed():
+    return {'run-once': True}
 
 # uptodate
 def run_once(task, values):
     """execute task just once
     used when user manually manages a dependency
     """
-    def save_executed():
-        return {'run-once': True}
     task.value_savers.append(save_executed)
     return values.get('run-once', False)
 
@@ -71,7 +71,10 @@ class config_changed(object):
                              ', must be string or dict') % (type(self.config),))
 
     def configure_task(self, task):
-        task.value_savers.append(lambda: {'_config_changed':self.config_digest})
+        task.value_savers.append(self.digest)
+
+    def digest(self):
+        return {'_config_changed': self.config_digest}
 
     def __call__(self, task, values):
         """return True if confing values are UNCHANGED"""

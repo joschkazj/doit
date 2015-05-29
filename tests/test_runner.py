@@ -308,6 +308,13 @@ def RunnerClass(request):
 def ok(): return "ok"
 def ok2(): return "different"
 
+
+def my_action():
+            import sys
+            sys.stdout.write('out here')
+            sys.stderr.write('err here')
+            return {'bb': 5}
+
 class TestRunner_run_tasks(object):
 
     def test_teardown(self, reporter, RunnerClass, dep_manager):
@@ -335,11 +342,6 @@ class TestRunner_run_tasks(object):
 
     # test result, value, out, err are saved into task
     def test_result(self, reporter, RunnerClass, dep_manager):
-        def my_action():
-            import sys
-            sys.stdout.write('out here')
-            sys.stderr.write('err here')
-            return {'bb': 5}
         task = Task("taskY", [my_action] )
         my_runner = RunnerClass(dep_manager, reporter)
         assert None == task.result
