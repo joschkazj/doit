@@ -418,7 +418,10 @@ class MRunner(Runner):
         # task queue - tasks ready to be dispatched to sub-processes
         job_q = self.Queue()
         self._run_tasks_init(task_dispatcher)
-        proc_list = self._run_start_processes(job_q, result_q)
+        try:
+            proc_list = self._run_start_processes(job_q, result_q)
+        except pickle.PicklingError as exc:
+            raise InvalidTask(repr(exc))
 
         # wait for all processes terminate
         proc_count = len(proc_list)
